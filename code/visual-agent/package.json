@@ -4,7 +4,7 @@
   "private": true,
   "description": "A minimal local n8n AI agent example for the AI Agents course.",
   "scripts": {
-    "start": "cross-env N8N_USER_FOLDER=. N8N_DIAGNOSTICS_ENABLED=false N8N_PERSONALIZATION_ENABLED=false N8N_VERSION_NOTIFICATIONS_ENABLED=false n8n start"
+    "start": "node init && cross-env N8N_USER_FOLDER=. N8N_DIAGNOSTICS_ENABLED=false N8N_PERSONALIZATION_ENABLED=false N8N_VERSION_NOTIFICATIONS_ENABLED=false n8n start"
   },
   "engines": {
     "node": ">=22.22 <25"

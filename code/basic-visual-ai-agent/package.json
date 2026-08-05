@@ -7,7 +7,7 @@
     "node": ">=22.22 <25"
   },
   "scripts": {
-    "start": "node scripts/start-n8n.mjs",
+    "start": "node init && node scripts/start-n8n.mjs",
     "seed": "node scripts/seed-workflow.mjs",
     "reseed": "node scripts/seed-workflow.mjs --force",
     "n8n": "node scripts/n8n-cli.mjs",

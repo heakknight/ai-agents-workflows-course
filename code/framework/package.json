@@ -7,10 +7,10 @@
     "#*": "./agent/*"
   },
   "scripts": {
-    "build": "eve build",
-    "dev": "eve dev",
-    "dev:no-ui": "eve dev --no-ui",
-    "start": "eve start",
+    "build": "node init && eve build",
+    "dev": "node init && eve dev",
+    "dev:no-ui": "node init && eve dev --no-ui",
+    "start": "node init && eve start",
     "info": "eve info",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
