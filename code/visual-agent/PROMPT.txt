@@ -1,0 +1,34 @@
+Build the smallest useful local n8n AI-agent example and distribute it as an importable
+workflow JSON file. Keep the graph visually clear so students can immediately
+distinguish the trigger, model, agent, and tool.
+
+The graph must contain exactly four nodes:
+- A chat trigger receives the user's message.
+- An AI Agent decides whether a tool is needed.
+- One configured chat model connects through the dedicated model port.
+- One calculator connects through the dedicated tool port.
+
+Leave the Chat Trigger and AI Agent options at their defaults. Demonstrate arithmetic
+through the calculator's dedicated tool connection and a documented example prompt. Keep
+this example intentionally minimal: no custom code nodes, custom agent instructions,
+memory, extra tools, automatic workflow seeding, external database, or production
+deployment layer.
+
+Pin a supported n8n release and compatible Node range. Persist the owner account,
+workflow edits, execution history, and encrypted credentials in an ignored local state
+directory. Never put API keys or credential values in workflow JSON, package metadata,
+shell commands, or Git. Let learners import the JSON manually and configure the model
+credential inside n8n.
+
+Highlight pitfalls: ordinary graph connections are not the same as AI model/tool ports;
+an unconfigured credential makes the workflow appear broken; local state contains
+sensitive execution history; resetting state deletes local setup;
+package-manager/native-install behavior can vary; and exposing n8n publicly requires
+authentication, TLS, rate limits, and hardening.
+
+Document manual verification of exactly four nodes, the dedicated model/tool connection
+kinds, absence of embedded secrets, and a representative calculator prompt. Keep live
+model testing optional and do not add an automated test command to this intentionally
+minimal project. Include concise prerequisites, installation, local startup, manual
+import, credential setup, example arithmetic, health/reset/troubleshooting, and
+credential-safety instructions.

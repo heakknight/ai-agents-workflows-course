@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Summarize PDF, TXT, and Markdown documents locally with Gemma 4."
+    />
+    <title>Local document summarizer</title>
+  </head>
+  <body>
+    <main id="app" class="app-shell" data-state="idle">
+      <div class="workspace">
+        <section class="upload-card" aria-labelledby="page-title">
+          <header class="intro">
+            <p class="eyebrow">Private, on-device workflow</p>
+            <h1 id="page-title">Summarize a document locally</h1>
+            <p class="intro-copy">
+              Choose a document and Gemma 4 will create a concise summary in
+              your browser. Your document is never uploaded.
+            </p>
+          </header>
+
+          <div
+            id="drop-region"
+            class="drop-region"
+            role="group"
+            aria-labelledby="upload-prompt"
+            aria-describedby="file-requirements model-note"
+            aria-disabled="false"
+            aria-busy="false"
+            data-disabled="false"
+          >
+            <input
+              id="document-file"
+              class="file-input"
+              type="file"
+              aria-describedby="file-requirements model-note"
+            />
+            <label class="upload-label" for="document-file">
+              Choose a document
+            </label>
+            <p id="upload-prompt" class="drop-prompt">
+              or drop it anywhere in this area
+            </p>
+            <p id="file-requirements" class="file-requirements">
+              PDF, TXT, or Markdown · 20 MiB maximum · text-based PDFs up to 50
+              pages
+            </p>
+          </div>
+
+          <p id="model-note" class="model-note">
+            The first summary downloads about 3 GB of model files and requires
+            WebGPU in desktop Chromium.
+          </p>
+
+          <div id="status-row" class="status-row" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+
+          <p id="error" class="error-message" role="alert" hidden></p>
+        </section>
+
+        <article id="summary-card" class="summary-card" aria-labelledby="summary-title" hidden>
+          <h2 id="summary-title">Summary</h2>
+          <p id="summary" class="summary-text"></p>
+        </article>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

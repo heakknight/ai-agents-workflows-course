@@ -1,0 +1,112 @@
+{
+  "id": "create-pdf-tool-2325",
+  "name": "Tool - Create PDF",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "name": "content",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "bf53d504-fc88-4fc9-a166-2d193c737980",
+      "name": "Receive PDF Content",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "javaScript",
+        "jsCode": "const item = $input.item;\nconst rawTitle = typeof item.json?.title === 'string' ? item.json.title.trim() : '';\nconst rawContent = typeof item.json?.content === 'string' ? item.json.content.trim() : '';\n\nif (!rawContent) throw new Error('PDF content is required.');\nif (rawContent.length > 12000) throw new Error('PDF content exceeds the 12,000-character teaching limit.');\n\nfunction toAscii(value) {\n  return value\n    .replace(/[\u201c\u201d]/g, '\"')\n    .replace(/[\u2018\u2019]/g, \"'\")\n    .replace(/[\u2013\u2014]/g, '-')\n    .replace(/\u2026/g, '...')\n    .replace(/[\u2022\u25cf]/g, '-')\n    .normalize('NFKD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^\\x20-\\x7E\\n]/g, '?');\n}\n\nfunction wrapLine(line, width = 86) {\n  if (!line) return [''];\n  const words = line.split(/\\s+/);\n  const wrapped = [];\n  let current = '';\n  for (const originalWord of words) {\n    const chunks = originalWord.match(new RegExp(`.{1,${width}}`, 'g')) || [''];\n    for (const word of chunks) {\n      if (!current) current = word;\n      else if (current.length + 1 + word.length <= width) current += ` ${word}`;\n      else {\n        wrapped.push(current);\n        current = word;\n      }\n    }\n  }\n  if (current) wrapped.push(current);\n  return wrapped;\n}\n\nfunction pdfEscape(value) {\n  return value.replace(/\\\\/g, '\\\\\\\\').replace(/\\(/g, '\\\\(').replace(/\\)/g, '\\\\)');\n}\n\nconst title = toAscii(rawTitle || 'Generated Summary').slice(0, 80);\nconst lines = toAscii(rawContent.replace(/\\r\\n?/g, '\\n'))\n  .split('\\n')\n  .flatMap((line) => wrapLine(line));\nconst linesPerPage = 42;\nconst pages = [];\nfor (let index = 0; index < lines.length; index += linesPerPage) {\n  pages.push(lines.slice(index, index + linesPerPage));\n}\nif (pages.length === 0) pages.push([]);\n\nconst fontId = 3 + pages.length * 2;\nconst objects = [];\nobjects[1] = '<< /Type /Catalog /Pages 2 0 R >>';\nconst pageReferences = pages.map((_, index) => `${3 + index * 2} 0 R`).join(' ');\nobjects[2] = `<< /Type /Pages /Kids [${pageReferences}] /Count ${pages.length} >>`;\n\npages.forEach((pageLines, index) => {\n  const pageId = 3 + index * 2;\n  const contentId = pageId + 1;\n  const pageTitle = pages.length > 1 ? `${title} (${index + 1}/${pages.length})` : title;\n  const commands = [\n    'BT',\n    '/F1 18 Tf',\n    '50 742 Td',\n    `(${pdfEscape(pageTitle)}) Tj`,\n    '/F1 11 Tf',\n    '0 -28 Td',\n  ];\n  for (const line of pageLines) {\n    commands.push(`(${pdfEscape(line)}) Tj`, '0 -15 Td');\n  }\n  commands.push('ET');\n  const stream = `${commands.join('\\n')}\\n`;\n  objects[pageId] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R >>`;\n  objects[contentId] = `<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\\nstream\\n${stream}endstream`;\n});\nobjects[fontId] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';\n\nlet pdf = '%PDF-1.4\\n%\\xE2\\xE3\\xCF\\xD3\\n';\nconst offsets = [0];\nfor (let id = 1; id <= fontId; id += 1) {\n  offsets[id] = Buffer.byteLength(pdf, 'latin1');\n  pdf += `${id} 0 obj\\n${objects[id]}\\nendobj\\n`;\n}\nconst xrefOffset = Buffer.byteLength(pdf, 'latin1');\npdf += `xref\\n0 ${fontId + 1}\\n`;\npdf += '0000000000 65535 f \\n';\nfor (let id = 1; id <= fontId; id += 1) {\n  pdf += `${String(offsets[id]).padStart(10, '0')} 00000 n \\n`;\n}\npdf += `trailer\\n<< /Size ${fontId + 1} /Root 1 0 R >>\\nstartxref\\n${xrefOffset}\\n%%EOF\\n`;\n\nconst slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'summary';\nconst stamp = new Date().toISOString().replace(/[:.]/g, '-');\nconst fileName = `${slug}-${stamp}.pdf`;\nconst pdfBuffer = Buffer.from(pdf, 'latin1');\nconst binaryData = await this.helpers.prepareBinaryData(pdfBuffer, fileName, 'application/pdf');\n\nreturn {\n  json: { fileName, pageCount: pages.length, byteLength: pdfBuffer.length },\n  binary: { data: binaryData }\n};"
+      },
+      "id": "85c089bb-d723-4f12-986f-4c7aadf28d76",
+      "name": "Build PDF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ 'generated-pdfs/' + $json.fileName }}",
+        "dataPropertyName": "data",
+        "options": {}
+      },
+      "id": "b30dbd63-500a-4893-a862-6fc68be4ba51",
+      "name": "Write PDF to Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Local PDF tool\nThis helper builds a dependency-free, text-only PDF. The final write node saves it in `generated-pdfs/` and returns the exact local path and PDF metadata to the agent. Inputs are capped at 12,000 characters.",
+        "height": 200,
+        "width": 700,
+        "color": 5
+      },
+      "id": "21fbdcd0-4674-4e63-ad43-66ad13222dde",
+      "name": "How PDF creation works",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "Receive PDF Content": {
+      "main": [
+        [
+          {
+            "node": "Build PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build PDF": {
+      "main": [
+        [
+          {
+            "node": "Write PDF to Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6489c317-089b-42d8-b620-c5f519202f3d",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

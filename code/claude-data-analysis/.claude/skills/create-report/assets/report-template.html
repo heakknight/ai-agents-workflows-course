@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{REPORT_TITLE}}</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 4%);
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px 24px;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 1.6rem;
+      letter-spacing: -0.02em;
+    }
+    header .subtitle { margin: 0; color: var(--muted); }
+    .period {
+      align-self: flex-start;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .card .label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .card .value {
+      margin: 0;
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .card .delta {
+      margin: 6px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .card .delta.up { color: var(--good); }
+    .card .delta.down { color: var(--bad); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+    .takeaways {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--ink);
+    }
+    .takeaways li { margin: 0 0 8px; }
+    .takeaways li:last-child { margin-bottom: 0; }
+
+    .chart {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chart .grid-line { stroke: var(--line); stroke-width: 1; }
+    .chart .bar { fill: var(--accent); }
+    .chart .axis { fill: var(--muted); font-size: 11px; font-family: var(--font); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    footer.method {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1px dashed var(--line);
+      background: rgb(255 255 255 / 70%);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer.method strong { color: var(--ink); font-weight: 600; }
+    footer.method code {
+      font-family: var(--mono);
+      font-size: 0.84em;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+
+    @page { size: A4; margin: 14mm; }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .card, footer.method { box-shadow: none; break-inside: avoid; }
+      table { break-inside: auto; }
+      tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header>
+      <div>
+        <h1>{{REPORT_TITLE}}</h1>
+        <p class="subtitle">{{REPORT_SUBTITLE}}</p>
+      </div>
+      <div class="period">{{REPORT_PERIOD}}</div>
+    </header>
+
+    <!-- KPI CARDS: duplicate or remove cards as needed -->
+    <section class="kpis" aria-label="Key metrics">
+      <article class="card">
+        <p class="label">{{KPI_1_LABEL}}</p>
+        <p class="value">{{KPI_1_VALUE}}</p>
+        <p class="delta">{{KPI_1_NOTE}}</p>
+      </article>
+      <article class="card">
+        <p class="label">{{KPI_2_LABEL}}</p>
+        <p class="value">{{KPI_2_VALUE}}</p>
+        <p class="delta">{{KPI_2_NOTE}}</p>
+      </article>
+      <article class="card">
+        <p class="label">{{KPI_3_LABEL}}</p>
+        <p class="value">{{KPI_3_VALUE}}</p>
+        <p class="delta">{{KPI_3_NOTE}}</p>
+      </article>
+    </section>
+
+    <!-- MAIN: chart + takeaways. Remove either column if unused. -->
+    <section class="grid">
+      <article class="card">
+        <h2>{{CHART_TITLE}}</h2>
+        {{CHART_SVG_OR_REMOVE_SECTION}}
+      </article>
+      <article class="card">
+        <h2>Takeaways</h2>
+        <ul class="takeaways">
+          <li>{{TAKEAWAY_1}}</li>
+          <li>{{TAKEAWAY_2}}</li>
+          <li>{{TAKEAWAY_3}}</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- TABLE -->
+    <section class="card" aria-label="Detail table">
+      <h2>{{TABLE_TITLE}}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>{{COLUMN_1_LABEL}}</th>
+            <th class="num">{{COLUMN_2_LABEL}}</th>
+            <th class="num">{{COLUMN_3_LABEL}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{TABLE_ROWS}}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- METHODOLOGY (required) -->
+    <footer class="method">
+      <strong>Methodology.</strong>
+      Source: {{METHODOLOGY_SOURCE}}.
+      Filters: {{METHODOLOGY_FILTERS}}.
+      Metrics: {{METHODOLOGY_METRICS}}.
+      Caveats: {{METHODOLOGY_CAVEATS}}.
+    </footer>
+  </div>
+</body>
+</html>

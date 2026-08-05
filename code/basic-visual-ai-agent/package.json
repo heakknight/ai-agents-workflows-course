@@ -1,0 +1,19 @@
+{
+  "name": "basic-visual-ai-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local n8n teaching project with a chat-based AI agent that summarizes text and creates PDFs.",
+  "engines": {
+    "node": ">=22.22 <25"
+  },
+  "scripts": {
+    "start": "node scripts/start-n8n.mjs",
+    "seed": "node scripts/seed-workflow.mjs",
+    "reseed": "node scripts/seed-workflow.mjs --force",
+    "n8n": "node scripts/n8n-cli.mjs",
+    "test": "node scripts/validate-project.mjs"
+  },
+  "dependencies": {
+    "n8n": "2.32.5"
+  }
+}

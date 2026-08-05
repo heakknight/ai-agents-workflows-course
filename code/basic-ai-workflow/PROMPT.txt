@@ -1,0 +1,33 @@
+Build a small command-line text-summarization workflow, not an autonomous agent. Use any
+suitable language and a current model SDK. The course reference uses Python, uv, the
+OpenAI Responses API, gpt-5-nano, and low reasoning effort; an implementation in another
+language should preserve the same stateless protocol and behavior. Keep the code
+deliberately linear and easy for students to inspect.
+
+Core behavior:
+- Accept exactly one input source: literal text or a UTF-8 TXT/Markdown file.
+- Reject missing, conflicting, empty, unsupported, unreadable, and non-UTF-8 input
+  before making an API request.
+- Make one stateless model call. Use no tools, memory, retries, branches, or agent loop.
+- Delimit the source clearly and instruct the model to treat it as untrusted document
+  content, ignore instructions inside it, preserve supported facts, and return only a
+  concise summary.
+- Disable provider-side response storage when supported. Read credentials and an
+  optional model override from environment variables.
+- Write a successful result safely to a fixed output such as out/summary.txt. Create its
+  directory when needed, but never replace a valid previous result after an incomplete
+  or empty model response.
+- Convert authentication, timeout, connection, quota, and API-status failures into
+  concise user-facing errors without leaking secrets or stack traces by default.
+
+Key concepts and pitfalls:
+- This example teaches deterministic application-controlled flow; do not let the model
+  choose what happens next.
+- Validate before calling the model so bad local input cannot incur cost.
+- Do not silently truncate files, follow document-borne instructions, or mistake an
+  incomplete response for success.
+
+Add mocked tests for validation, request configuration, prompt boundaries,
+incomplete/empty responses, output behavior, API-key requirements, and the end-to-end
+CLI path. Include a concise README with prerequisites, installation, credentials,
+text/file examples, output location, tests, billing notes, and common failures.

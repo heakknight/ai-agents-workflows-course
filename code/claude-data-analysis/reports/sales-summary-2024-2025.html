@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sales Performance Summary</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --good: #15803d;
+      --bad: #b91c1c;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 8px 24px rgb(15 23 42 / 4%);
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px 24px;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 1.6rem;
+      letter-spacing: -0.02em;
+    }
+    header .subtitle { margin: 0; color: var(--muted); }
+    .period {
+      align-self: flex-start;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .card .label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .card .value {
+      margin: 0;
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .card .delta {
+      margin: 6px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .card .delta.up { color: var(--good); }
+    .card .delta.down { color: var(--bad); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+    .takeaways {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--ink);
+    }
+    .takeaways li { margin: 0 0 8px; }
+    .takeaways li:last-child { margin-bottom: 0; }
+
+    .chart {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chart .grid-line { stroke: var(--line); stroke-width: 1; }
+    .chart .bar { fill: var(--accent); }
+    .chart .axis { fill: var(--muted); font-size: 11px; font-family: var(--font); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    footer.method {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1px dashed var(--line);
+      background: rgb(255 255 255 / 70%);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer.method strong { color: var(--ink); font-weight: 600; }
+    footer.method code {
+      font-family: var(--mono);
+      font-size: 0.84em;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+
+    @page { size: A4; margin: 14mm; }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .card, footer.method { box-shadow: none; break-inside: avoid; }
+      table { break-inside: auto; }
+      tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+<header>
+      <div>
+        <h1>Sales Performance Summary</h1>
+        <p class="subtitle">Recognized revenue and sales mix across 300 recorded orders</p>
+      </div>
+      <div class="period">Jan 3, 2024–Dec 29, 2025</div>
+    </header>
+<section class="kpis" aria-label="Key metrics">
+      <article class="card">
+        <p class="label">Recognized revenue</p>
+        <p class="value">$17,602.79</p>
+        <p class="delta">Completed + Shipped orders</p>
+      </article>
+      <article class="card">
+        <p class="label">Eligible orders</p>
+        <p class="value">173</p>
+        <p class="delta">57.7% of all 300 orders</p>
+      </article>
+      <article class="card">
+        <p class="label">Units sold</p>
+        <p class="value">377</p>
+        <p class="delta">Across eligible orders</p>
+      </article>
+      <article class="card">
+        <p class="label">Average order value</p>
+        <p class="value">$101.75</p>
+        <p class="delta">Revenue ÷ eligible orders</p>
+      </article>
+    </section>
+<section class="grid">
+      <article class="card">
+        <h2>Recognized revenue by category</h2>
+        <svg class="chart" viewBox="0 0 560 330" role="img" aria-labelledby="category-chart-title category-chart-desc">
+          <title id="category-chart-title">Recognized revenue by product category</title>
+          <desc id="category-chart-desc">Electronics leads with 6,868 dollars and 78 cents, or 39.0 percent of recognized revenue. Accessories is lowest at 446 dollars and 99 cents.</desc>
+          <line class="grid-line" x1="155" y1="12" x2="155" y2="314" />
+          <line class="grid-line" x1="305" y1="12" x2="305" y2="314" />
+          <line class="grid-line" x1="455" y1="12" x2="455" y2="314" />
+          <text class="axis" x="155" y="326" text-anchor="middle">$0</text>
+          <text class="axis" x="305" y="326" text-anchor="middle">$3.4k</text>
+          <text class="axis" x="455" y="326" text-anchor="middle">$6.9k</text>
+          <text class="axis" x="145" y="30" text-anchor="end">Electronics</text>
+          <rect class="bar" x="155" y="17" width="300" height="18" rx="4" /><text class="axis" x="463" y="30">$6,868.78</text>
+          <text class="axis" x="145" y="69" text-anchor="end">Home</text>
+          <rect class="bar" x="155" y="56" width="90" height="18" rx="4" /><text class="axis" x="253" y="69">$2,055.57</text>
+          <text class="axis" x="145" y="108" text-anchor="end">Lifestyle</text>
+          <rect class="bar" x="155" y="95" width="85" height="18" rx="4" /><text class="axis" x="248" y="108">$1,952.93</text>
+          <text class="axis" x="145" y="147" text-anchor="end">Home Office</text>
+          <rect class="bar" x="155" y="134" width="83" height="18" rx="4" /><text class="axis" x="246" y="147">$1,898.52</text>
+          <text class="axis" x="145" y="186" text-anchor="end">Outdoor</text>
+          <rect class="bar" x="155" y="173" width="79" height="18" rx="4" /><text class="axis" x="242" y="186">$1,816.26</text>
+          <text class="axis" x="145" y="225" text-anchor="end">Fitness</text>
+          <rect class="bar" x="155" y="212" width="61" height="18" rx="4" /><text class="axis" x="224" y="225">$1,404.39</text>
+          <text class="axis" x="145" y="264" text-anchor="end">Stationery</text>
+          <rect class="bar" x="155" y="251" width="51" height="18" rx="4" /><text class="axis" x="214" y="264">$1,159.35</text>
+          <text class="axis" x="145" y="303" text-anchor="end">Accessories</text>
+          <rect class="bar" x="155" y="290" width="20" height="18" rx="4" /><text class="axis" x="183" y="303">$446.99</text>
+        </svg>
+      </article>
+      <article class="card">
+        <h2>Takeaways</h2>
+        <ul class="takeaways">
+          <li>Electronics generated <strong>$6,868.78</strong>, the largest category share at <strong>39.0%</strong>.</li>
+          <li>Online was the top channel at <strong>$8,651.14</strong> (<strong>49.1%</strong> of revenue).</li>
+          <li>Revenue rose from <strong>$7,579.75</strong> in 2024 to <strong>$10,023.04</strong> in 2025, up <strong>32.2%</strong>.</li>
+        </ul>
+      </article>
+    </section>
+<section class="card" aria-label="Detail table">
+      <h2>Revenue by sales channel</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="num">Revenue</th>
+            <th class="num">Share</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Online</td><td class="num">$8,651.14</td><td class="num">49.1%</td></tr>
+          <tr><td>Retail Store</td><td class="num">$6,931.84</td><td class="num">39.4%</td></tr>
+          <tr><td>Marketplace</td><td class="num">$1,602.56</td><td class="num">9.1%</td></tr>
+          <tr><td>Phone</td><td class="num">$417.25</td><td class="num">2.4%</td></tr>
+          <tr><th scope="row">Total</th><td class="num"><strong>$17,602.79</strong></td><td class="num"><strong>100.0%</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+<footer class="method">
+      <strong>Methodology.</strong>
+      Source: <code>sales.csv</code> (300 order-level rows; USD only).
+      Filters: all dates from Jan 3, 2024 through Dec 29, 2025; <code>order_status</code> is Completed or Shipped; Cancelled, Refunded, and Processing excluded.
+      Metrics: revenue = sum of <code>total_amount</code>; orders = distinct <code>order_id</code>; units = sum of <code>quantity</code>; AOV = revenue ÷ 173 eligible orders.
+      Caveats: the observed range does not include Jan 1–2 or Dec 30–31; no malformed dates or numeric values, duplicate order IDs, mixed currencies, negative values, or amount-reconciliation exceptions found.
+    </footer>
+  </div>
+</body>
+</html>

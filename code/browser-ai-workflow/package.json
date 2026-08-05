@@ -1,0 +1,24 @@
+{
+  "name": "browser-ai-workflow",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "postinstall": "patch-package"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.2.0",
+    "@llamaindex/liteparse-wasm": "2.10.0"
+  },
+  "devDependencies": {
+    "patch-package": "8.0.1",
+    "typescript": "6.0.2",
+    "vite": "8.1.1",
+    "vitest": "4.1.0"
+  }
+}

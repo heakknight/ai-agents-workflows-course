@@ -1,0 +1,12 @@
+node_modules/
+.n8n/
+.yarn/
+.cache/
+.DS_Store
+
+# This example intentionally supports multiple package managers.
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb

@@ -1,0 +1,34 @@
+Build a deliberately manual one-request summary/PDF agent in any suitable language
+without using native function-tool support. The course reference uses Python, openai
+2.48, the OpenAI Responses API, and gpt-5.6-sol with high reasoning; another stack
+should preserve the same text-JSON protocol and local-history behavior. The purpose is
+to expose why prompt-and-JSON tool protocols are fragile compared with SDK-backed
+function calling.
+
+Protocol and behavior:
+- Describe exactly two functions in the outer model instructions: summarize text and
+  create a text-only PDF.
+- Require the model to return ordinary JSON text containing either one tool request or a
+  final answer. Parse, validate, and dispatch that JSON in application code.
+- Use a separate stateless model call for every summary request. Treat source text as
+  untrusted data and ignore instructions inside it.
+- Create a PDF only when explicitly requested. For a summary PDF, summarize first and
+  pass only the returned summary into the PDF tool.
+- Generate safe unique filenames internally, cap content, create real multi-page PDF
+  bytes, and confine writes to one generated-output directory. Model arguments must not
+  override that directory.
+
+Replay complete provider output, including opaque reasoning items when available, plus
+plain tool-result messages in local history. Disable provider-side storage. Accept at
+most six tool-bearing responses, allow one final-answer request afterward, and reject a
+seventh tool before execution.
+
+Highlight pitfalls: JSON may be malformed, wrapped in Markdown, or contain invented tool
+names; the model may claim a tool succeeded without calling it; manual schemas are not
+provider-enforced; incomplete summary responses must not flow into PDFs; and dropping
+reasoning/history items can break later requests.
+
+Add mocked tests for JSON parsing, unknown/multiple actions, sequencing, history replay,
+limits, prompt-injection boundaries, stateless summarization, real PDF signatures, empty
+input, and output confinement. Include concise setup, examples, outputs, tests,
+retention caveats, and a comparison with native function calling.

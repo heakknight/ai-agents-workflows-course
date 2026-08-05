@@ -1,0 +1,31 @@
+{
+  "orders": [
+    {
+      "order_id": "1001",
+      "customer_name": "Alex Example",
+      "item": "Ceramic mug",
+      "status": "delivered_damaged",
+      "refund_eligible": true,
+      "refund_amount_cents": 850,
+      "refund_reason": "Item arrived damaged"
+    },
+    {
+      "order_id": "1002",
+      "customer_name": "Sam Example",
+      "item": "Desk lamp",
+      "status": "delivered_damaged",
+      "refund_eligible": true,
+      "refund_amount_cents": 2499,
+      "refund_reason": "Item arrived damaged"
+    },
+    {
+      "order_id": "1003",
+      "customer_name": "Taylor Example",
+      "item": "Clearance notebook",
+      "status": "delivered",
+      "refund_eligible": false,
+      "refund_amount_cents": 500,
+      "refund_reason": "Final-sale item"
+    }
+  ]
+}

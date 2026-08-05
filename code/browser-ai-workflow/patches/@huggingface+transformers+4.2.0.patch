@@ -1,0 +1,39 @@
+diff --git a/node_modules/@huggingface/transformers/dist/transformers.web.js b/node_modules/@huggingface/transformers/dist/transformers.web.js
+index bb7b327..69015c1 100644
+--- a/node_modules/@huggingface/transformers/dist/transformers.web.js
++++ b/node_modules/@huggingface/transformers/dist/transformers.web.js
+@@ -23315,6 +23315,7 @@ var Gemma3nForConditionalGeneration = class extends Gemma3nPreTrainedModel {
+     // Generic generation parameters
+     generation_config = null,
+     logits_processor = null,
++    num_logits_to_keep = null,
+     // TODO: needed?
+     ...kwargs
+   }) {
+@@ -23355,7 +23356,8 @@ var Gemma3nForConditionalGeneration = class extends Gemma3nPreTrainedModel {
+         attention_mask,
+         position_ids,
+         generation_config,
+-        logits_processor
++        logits_processor,
++        num_logits_to_keep
+       },
+       true
+     );
+diff --git a/node_modules/@huggingface/transformers/src/models/gemma3n/modeling_gemma3n.js b/node_modules/@huggingface/transformers/src/models/gemma3n/modeling_gemma3n.js
+index 4254e01..9a02553 100644
+--- a/node_modules/@huggingface/transformers/src/models/gemma3n/modeling_gemma3n.js
++++ b/node_modules/@huggingface/transformers/src/models/gemma3n/modeling_gemma3n.js
+@@ -38,3 +38,4 @@ export class Gemma3nForConditionalGeneration extends Gemma3nPreTrainedModel {
+         // Generic generation parameters
+         generation_config = null,
+         logits_processor = null,
++        num_logits_to_keep = null,
+@@ -84,6 +85,7 @@ export class Gemma3nForConditionalGeneration extends Gemma3nPreTrainedModel {
+                 position_ids,
+                 generation_config,
+                 logits_processor,
++                num_logits_to_keep,
+             },
+             true,
+         );

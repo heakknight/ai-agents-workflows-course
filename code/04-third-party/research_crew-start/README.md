@@ -1,54 +1,35 @@
-# ResearchCrew Crew
+# Research Crew Starter
 
-Welcome to the ResearchCrew Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+A starter [CrewAI](https://crewai.com) project using the classic Python/YAML scaffold. It defines two agents (`researcher` and `reporting_analyst`) and two tasks executed sequentially, with the final task writing `report.md`. No web-search tool is configured yet; the included custom-tool file is only an unattached stub.
 
-## Installation
+## Requirements
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+- Python `>=3.10,<3.14`
+- [uv](https://docs.astral.sh/uv/)
+- An OpenAI API key
 
-First, if you haven't already, install uv:
-
-```bash
-pip install uv
-```
-
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
-
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/research_crew/config/agents.yaml` to define your agents
-- Modify `src/research_crew/config/tasks.yaml` to define your tasks
-- Modify `src/research_crew/crew.py` to add your own logic, tools and specific args
-- Modify `src/research_crew/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+## Install and run
 
 ```bash
-$ crewai run
+uv sync
 ```
 
-This command initializes the research-crew Crew, assembling the agents and assigning them tasks as defined in your configuration.
+In the existing `.env`, replace the placeholder values for `MODEL` and `OPENAI_API_KEY`, then run:
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```bash
+uv run crewai run
+```
 
-## Understanding Your Crew
+## Key paths
 
-The research-crew Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+- `src/research_crew/config/agents.yaml` — agent definitions
+- `src/research_crew/config/tasks.yaml` — task definitions
+- `src/research_crew/crew.py` — agents, tasks, process, and output setup
+- `src/research_crew/main.py` — runtime inputs and command entry points
+- `src/research_crew/tools/` — tool implementations or stubs
 
-## Support
+## Possible modernization
 
-For support, questions, or feedback regarding the ResearchCrew Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
-
-Let's create wonders together with the power and simplicity of crewAI.
+- Prefer CrewAI's JSON-first project format for new projects; the classic Python/YAML scaffold remains supported.
+- Commit a `.env.example` and ignore the real `.env`.
+- Add a research/web-search tool and automated tests.

@@ -1,0 +1,39 @@
+Build a one-request trusted-local coding agent in any suitable language using a
+provider's native strict function-calling API. The course reference uses Python, openai
+2.48, the OpenAI Responses API, gpt-5.6-sol with high reasoning, and PyYAML for skill
+metadata; another stack should preserve the same call-ID, history-replay, reasoning, and
+strict-schema semantics. Keep the model/tool loop visible and deliberately omit
+production hardening so students can understand the core architecture.
+
+Expose exactly five sequential tools:
+- Read UTF-8 text from a path.
+- Write or replace a complete file.
+- Perform one exact edit only when the old text has exactly one match.
+- Store a titled Markdown memory under the selected project's memory directory.
+- Run a shell command with a 30-second timeout and bounded logging.
+
+Support a selectable working directory, but deliberately allow normal absolute paths and
+traversal. Print a prominent warning that there is no sandbox, path confinement,
+approval layer, or command allowlist. Log paths and only a short command preview, never
+file contents.
+
+At startup, load global instructions and then project instructions. Discover global and
+project Agent Skills from validated metadata, with project skills overriding matching
+global skills; expose only catalog metadata until a skill becomes relevant. Catalog
+project memory filenames similarly.
+
+Replay the complete local response history, including reasoning items when the provider
+requires them, and correlate every tool result with its call ID. Disable parallel calls
+and provider-side storage. Return ordinary tool failures to the model so it can recover.
+Allow 50 tool rounds and one final-answer opportunity, rejecting further tools before
+execution.
+
+Highlight pitfalls: this agent can delete files or run destructive commands;
+skill/memory content is trusted local input; multiple calls break simple sequential
+dispatch; partial history causes provider errors or lost reasoning; and store=false is
+not a zero-retention guarantee.
+
+Add mocked tests for schemas, tools, instruction precedence, lazy skill/memory loading,
+history replay, recoverable errors, multiple-call rejection, and limits. Document setup,
+credentials, interactive/noninteractive runs, authority, retention, tests, and omitted
+hardening.

@@ -1,0 +1,35 @@
+Build a one-request customer-support agent in any suitable language using strict native
+function tools. The course reference uses Python, openai 2.48, the OpenAI Responses API,
+and gpt-5.6-sol with high reasoning; another stack should preserve strict schemas,
+call-ID correlation, encrypted-reasoning replay when required, and store=false behavior.
+Demonstrate both filesystem path confinement and human approval for a sensitive action
+without contacting real services.
+
+Expose three sequential tools:
+- Read UTF-8 text beneath a fixed sandbox directory.
+- Write UTF-8 text beneath that same sandbox.
+- Request a simulated refund using only an order ID.
+
+Host code, not the model, must reload a trusted order database stored outside the
+writable sandbox, validate order existence and eligibility, and derive the amount and
+reason. Simulate refunds up to 1,000 cents immediately. Larger refunds require explicit
+“y” or “yes” approval. Denial, EOF, interruption, or approval errors must fail closed.
+The simulator prints a result but changes no real payment system.
+
+For file access, resolve the requested destination and require its real path to remain
+beneath a non-symlink sandbox root. Reject absolute paths, traversal, the root itself,
+and symlinks that escape. Document that this is path confinement, not race-proof
+operating-system isolation.
+
+Execute at most one function call per response, replay complete correlated local
+history, disable parallel calls and provider storage, allow six tool rounds plus one
+final-answer request, and reject unknown, multiple, or seventh calls before execution.
+
+Highlight pitfalls: never trust model-supplied refund amounts or reasons; approval must
+happen before side effects; path-prefix string checks are unsafe; symlink checks alone
+do not eliminate races; and store=false is not zero retention.
+
+Test confinement, traversal, symlinks, UTF-8 operations, trusted policy derivation,
+small/large/ineligible refunds, denial/EOF, strict schemas, replay, multiple-call
+rejection, and limits. Include concise setup, examples, tests, retention, and safety
+warnings.

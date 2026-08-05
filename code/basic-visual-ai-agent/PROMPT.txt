@@ -1,0 +1,33 @@
+Build a local n8n teaching project with three visual workflows: one private
+chat-triggered AI agent and two callable helper workflows. Pin compatible Node and n8n
+versions and keep all workflow JSON free of credentials.
+
+Required workflows:
+- The main chat agent has exactly two tools and a bounded iteration count.
+- A summarization helper accepts text, treats it as untrusted data, ignores embedded
+  instructions, and returns a concise factual summary.
+- A deterministic PDF helper accepts non-empty text, enforces a reasonable size limit,
+  creates a safe unique filename, writes only beneath generated-pdfs/, and returns
+  useful file metadata.
+- A normal summary stays in chat. Create a PDF only when the user explicitly asks. For a
+  summary PDF, summarize first and pass only the returned summary to the PDF helper.
+
+Local project tooling:
+- Store n8n runtime state in an ignored project directory, bind to loopback, and
+  restrict filesystem access to the generated-output directory.
+- Seed workflows on first run without overwriting learner edits. Provide explicit
+  reseed/reset commands.
+- Publish only the callable helper workflows and explain that changed helpers may need
+  republishing.
+- Never place API keys in .env, workflow JSON, package scripts, or Git; credentials
+  belong in n8n's encrypted credential store.
+
+Highlight pitfalls: an AI Agent node is not enough unless tools are wired through tool
+connections; unpublished helpers cannot be called; unrestricted file access is
+dangerous; execution history may retain prompts and outputs; public hosting requires
+authentication, upload limits, rate limits, and stronger isolation.
+
+Add offline validation for files, topology, stable IDs, schemas, private triggers, model
+settings, tool wiring, runtime pins, secret hygiene, path confinement, and valid PDF
+bytes. Include concise setup, credential, example-chat, output, testing, reseeding,
+retention, and safety documentation.

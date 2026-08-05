@@ -1,0 +1,36 @@
+Build a one-request summary/PDF agent in any suitable language using a provider's native
+strict function-calling protocol. The course reference uses Python, openai 2.48, the
+OpenAI Responses API, and gpt-5.6-sol with high reasoning; another stack should preserve
+the same strict-schema, call-ID, reasoning-replay, and local-history semantics. Keep the
+loop small enough for students to read while correctly preserving provider state
+locally.
+
+Expose exactly two tools:
+- A separate stateless summarizer used for every summary request. It must treat source
+  text as untrusted data, ignore embedded instructions, disable storage, and reject
+  incomplete or empty responses.
+- A deterministic text-only PDF creator used only when explicitly requested. It
+  validates non-empty input, caps content at roughly 12,000 characters, generates safe
+  unique filenames, supports multiple pages, and writes only to one fixed
+  generated-output directory.
+
+For summary PDFs, call summarization first and pass only its result to PDF creation.
+Normal summaries remain text. Configure strict schemas, disable parallel tool calls,
+execute at most one call per response, correlate results by call ID, and replay the
+complete local response history, including reasoning items when required. Do not rely on
+previous_response_id if the example is teaching local replay. Disable provider-side
+storage.
+
+Allow six tool-bearing rounds and one final-answer request. Reject unknown, multiple,
+malformed, or seventh calls before any tool executes. Tool dispatch must not let model
+arguments override output confinement.
+
+Highlight pitfalls: function-call output must use the matching call ID; incomplete
+history can break reasoning models; strict schemas do not enforce business sequencing;
+the model may request PDF creation too early; empty summaries must not become PDFs; and
+store=false is not zero retention.
+
+Add mocked tests for schemas, one-call enforcement, history/reasoning replay, round
+boundaries, sequencing, injection resistance, stateless summarization, real PDF bytes,
+empty input, and path confinement. Include concise credentials, install/run, examples,
+outputs, tests, retention, and scope documentation.

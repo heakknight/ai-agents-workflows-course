@@ -1,0 +1,32 @@
+Build an Eve-based internal customer-support agent for a fictional company. Expose Eve's
+local terminal/HTTP channel and optional Slack DMs and mentions. Keep all customer data
+and refund effects fake and resettable.
+
+Agent capabilities:
+- Read a Markdown knowledge base inside a network-denied sandbox.
+- Perform bounded customer search that returns candidate summaries only.
+- Perform authoritative exact customer lookup before account-specific decisions.
+- Issue full or partial refunds against a fake in-memory store, but only after
+  validation and Eve's human-approval mechanism.
+- Draft customer-facing responses for a human operator; never send email directly.
+
+Security and policy boundaries:
+- Treat knowledge-base and customer-supplied content as untrusted reference data.
+- Disable generic shell, write, web, todo, and sub-agent tools.
+- Slack requests must verify signatures, handle retries safely, and default-deny all
+  users unless their IDs are allowlisted.
+- Disclose minimal personal data and clearly separate known facts, policy
+  interpretation, and assumptions.
+- Before a refund, validate exact customer identity, transaction ownership, refundable
+  balance, prior refunds, and chargeback state. Never claim success before approval and
+  mutation complete.
+
+Highlight pitfalls: ambiguous name matches are not authorization; Slack interactivity is
+required for approval buttons; an empty allowlist must not mean “allow everyone”;
+knowledge-base sandboxing does not protect unrelated host tools; and production systems
+need durable transactions, idempotency, authentication, and audit logs.
+
+Test ambiguous/exact lookup, missing customers, full/partial refund transitions, repeat
+refunds, and chargeback rejection. Include concise environment, local TUI/HTTP,
+test/build, optional HTTPS Slack setup, allowlist, interactivity, sandbox, fake-data,
+and approval instructions.

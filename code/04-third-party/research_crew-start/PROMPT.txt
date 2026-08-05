@@ -1,0 +1,33 @@
+Build a classic CrewAI-style starter project that students can extend into a working
+research crew. Use Python 3.10-3.13, crewai[tools] 1.15.x, and the traditional
+src-layout Python/YAML scaffold with declarative agent/task configuration separated from
+orchestration.
+
+Required structure:
+- Define a senior researcher and a reporting analyst in agent configuration, including
+  role, goal, and backstory fields.
+- Define two sequential tasks: produce ten relevant bullet points for a topic and
+  current year, then expand that context into a detailed Markdown report written to
+  report.md.
+- Keep the starter topic fixed to “AI LLMs” so the initial run path is obvious.
+- Keep the runtime entry point thin and expose run, train, replay, and evaluation
+  commands.
+- Interpolate topic into agent and task configuration, and current_year into the
+  research task. Run verbosely and surface failures with useful context.
+
+Important teaching constraint: intentionally attach no web-search or research tool.
+Include an obvious custom-tool stub, but leave it unused. The project should make the
+limitation visible: without a real evidence tool, the researcher can only rely on model
+knowledge and must not be presented as current web research.
+
+Never commit real provider keys. Ignore local environment files and provide a safe
+.env.example with model and credential placeholders. Do not commit generated report
+files, caches, or virtual environments.
+
+Highlight pitfalls: mismatched YAML variable names fail at runtime; configured methods
+must match agent/task names; an unattached tool does nothing; “researcher” does not
+imply web access; and live model output is nondeterministic and billable.
+
+Add offline configuration/wiring tests and a mocked sequential-run smoke test. Include
+concise runtime-version, dependency, environment, command, output, layout, test,
+extension-point, and known-limitation documentation.

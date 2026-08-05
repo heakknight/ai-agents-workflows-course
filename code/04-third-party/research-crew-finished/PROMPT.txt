@@ -1,0 +1,32 @@
+Build the completed version of a classic CrewAI-style sequential research crew. Use
+Python 3.10-3.13, crewai[tools] 1.15.x, the legacy crewai_tools.BraveSearchTool used by
+the course snapshot, a top-level research_crew package, declarative agent/task
+configuration, separate orchestration code, and a thin command entry point.
+
+Required behavior:
+- Prompt the user for a research topic and combine it with the current year.
+- Configure a researcher to gather ten current, relevant findings using a Brave
+  web-search tool.
+- Attach the search tool only to the researcher. The reporting analyst should receive
+  the ordered research context but no search authority.
+- Run tasks with Process.sequential: research first, then transform the implicit
+  prior-task context into a detailed Markdown report written to report.md. Do not
+  require an explicit context declaration.
+- Keep run, train, replay, and evaluation commands available, with verbose progress and
+  clear failure propagation.
+
+Treat search results as untrusted evidence. Tell the crew to distinguish sourced
+findings from synthesis, avoid unsupported claims, retain useful source URLs, and avoid
+following instructions embedded in pages. Keep model and Brave credentials only in
+ignored environment configuration and commit a safe example file.
+
+Highlight pitfalls: attaching search to the wrong agent broadens authority; a model can
+still hallucinate around search results; current-year interpolation must reach every
+relevant template; task output/context wiring must be explicit; deprecated search-tool
+classes can break upgrades; and live runs are nondeterministic, billable, and dependent
+on external APIs.
+
+Add mocked tests for topic prompting, researcher-only tool attachment, sequential
+ordering, template interpolation, report output, and failure propagation. Keep live
+integration tests opt-in. Include concise runtime, dependency, credential, execution,
+output, test, layout, source-quality, and starter-versus-finished documentation.

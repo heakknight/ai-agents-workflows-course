@@ -1,0 +1,33 @@
+Build a browser-only document summarizer that keeps document parsing and inference on
+the user's device. The course reference uses Vite, TypeScript, Transformers.js 4.2,
+LiteParse WASM 2.10, and a small bundled patch needed for Gemma generation; another
+browser stack should preserve the same worker, privacy, and token-budget architecture.
+Keep policy and orchestration separate from the UI so they can be tested without a
+browser.
+
+Required behavior:
+- Provide an accessible file picker and drag/drop area for PDF, TXT, and Markdown.
+- Use idle, working, result, and error views. Within the working view, report parsing,
+  model download/loading, map, and reduce progress. Prevent concurrent jobs with a
+  single-busy worker.
+- Validate supported extensions, non-empty files, and a 20 MiB limit before processing.
+- Parse UTF-8 text directly and text-layer PDFs up to 50 pages. Do not add OCR or upload
+  documents to a server.
+- Normalize extracted text, count tokens with the loaded model tokenizer, reject sources
+  above 15,000 tokens, and never silently truncate.
+- Pack content into ordered budgeted chunks, with robust handling for paragraphs and
+  words longer than a chunk budget. Sequentially summarize at most ten chunks, then
+  perform one final reduction in source order.
+- Run onnx-community/gemma-4-E2B-it-ONNX at immutable revision
+  9f4bef82ea6e296bc69f8a2f5939f73af81b07a6 with WebGPU, q4f16 weights, deterministic
+  generation, text-only sessions, and thinking disabled.
+
+Highlight pitfalls: the first model download is large; WebGPU support varies; PDF
+extraction can produce no usable text; model context and generated-token budgets are
+different; parallel map calls can exhaust browser memory; and UI code must not claim
+privacy if documents leave the worker/browser.
+
+Test file policy, normalization, token accounting, chunk packing, oversize rejection,
+sequential map/reduce ordering, and state transitions. Include development, typecheck,
+test, build, preview, Chromium/WebGPU compatibility, download-size, privacy, and
+limitation notes.

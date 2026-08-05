@@ -1,0 +1,31 @@
+Build a polished, offline-capable 16:9 HTML research deck about how AI is changing
+knowledge work. Use exactly five evidence-led slides covering productivity's jagged
+frontier, pressure on junior roles, agent-driven workflow automation, and augmentation
+versus substitution. Make every factual claim traceable, include a source/provenance
+file, and never invent statistics or quotations.
+
+Presentation requirements:
+- Use semantic HTML with one section per slide, accessible labels, sequential numbering,
+  and a coherent dark framed visual system.
+- Use embedded local fonts, inline SVG/CSS graphics, and no runtime network
+  dependencies, libraries, or CDNs.
+- Keep content readable at presentation distance and provide print styles that produce
+  one landscape page per slide.
+
+Runtime requirements:
+- Rendering must be a deterministic function of slide index and reveal step.
+- Arrow keys advance/reverse reveal steps; Shift+Arrow jumps whole slides; navigation
+  never wraps or steals keystrokes from editable controls.
+- Support validated enter/exit steps, hidden-slide inertness, reduced motion, and
+  print-all-reveals. Keep the reusable title-morph helper available, but configure no
+  morph targets in this five-slide deck.
+
+Highlight pitfalls: hidden slides must not remain focusable; malformed reveal pairs
+create inconsistent navigation; print/PDF must force every reveal to its final state;
+remote fonts break offline use; background effects may disappear in print; and optional
+title morphs require careful state cleanup if later enabled.
+
+Add static and browser QA for navigation, contiguous reveals, layout overflow, title
+alignment, accessibility, local assets, console errors, reduced motion, printing, and
+small viewports. Include concise preview, build, QA, PDF export, and optional MP4/audit
+instructions.
